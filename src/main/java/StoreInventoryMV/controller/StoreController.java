@@ -1,45 +1,76 @@
-package controller;
+package StoreInventoryMV.controller;
 
-import java.io.IOException;
+
+import StoreInventoryMV.model.Product;
+import StoreInventoryMV.repository.StoreRepository;
+import jdk.nashorn.internal.runtime.regexp.joni.exception.ValueException;
+
 import java.util.ArrayList;
 
-import repository.StoreRepository;
-import model.Product;
+public class StoreController {
 
-public class StoreController { 
-	StoreRepository io =new StoreRepository();	
-	public void readProducts(String f){
-		try {
-			io.readFile(f);
-		} catch (NumberFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		catch(IOException e){
-			e.printStackTrace();
-		}
-	}
-	
-	public void addProduct(Product p){
-		try {
+    private StoreRepository repo;
 
-			io.addNewProduct(p);
-		} catch (NumberFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		catch(IOException e){
-			e.printStackTrace();
-		}
-	}
-	public ArrayList<Product> getProductsCategory(String cat){
-		return io.getProductsCategory(cat);
-	}
-	
-	public ArrayList<Product> stockSituationProduct(String pname){
-		return io.stockSituationProduct(pname);
-	}
-	public ArrayList<Product> stockSituation(){
-		return io.stockSituation();
-	}
+    public StoreController(StoreRepository repo){
+        this.repo = repo;
+    }
+
+    public boolean isValid(String s){
+        if (s.length() == 0 || s == null ){
+            return false;
+        }
+
+        String valid = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_";
+        for(int i=0; i< s.length(); i++){
+            if (valid.indexOf(s.charAt(i)) < 0){
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public void addNewProduct(int code, String name, String category, String supplier, int quantity) throws ValueException{
+        if (code <= 0 )
+            throw new ValueException("The code of a product cannot be negative or 0!");
+
+        if (!isValid(name))
+            throw  new ValueException("The string: " + name + " is invalid!");
+
+        if (!isValid(category))
+            throw  new ValueException("The string: " + category + " is invalid!");
+
+        if (!isValid(supplier))
+            throw  new ValueException("The string: " + supplier + " is invalid!");
+
+        if (quantity < 0 )
+            throw new ValueException("The quantity of a product cannot be negative!");
+
+        this.repo.addNewProduct(new Product(code,name,category,supplier,quantity));
+    }
+
+    public ArrayList<Product> getAllProducts(){
+        return this.repo.getAllProducts();
+    }
+
+    public ArrayList<Product> getProductsByName(String name) throws ValueException{
+        if (!isValid(name))
+            throw  new ValueException("The string: " + name + " is invalid!");
+
+        return this.repo.getProductsByName(name);
+    }
+
+    public ArrayList<Product> getProductsByCategory(String category) throws ValueException{
+        if (!isValid(category))
+            throw  new ValueException("The string: " + category + " is invalid!");
+
+        return this.repo.getProductsByCategory(category);
+    }
+
+    public ArrayList<Product> getProdcutsBySupplier(String supplier) throws ValueException{
+        if (!isValid(supplier))
+            throw  new ValueException("The string: " + supplier + " is invalid!");
+
+        return this.repo.getProductsBySupplier(supplier);
+    }
 }

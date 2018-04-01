@@ -1,120 +1,158 @@
-package ui;
+package StoreInventoryMV.ui;
 
-import controller.StoreController;
-import model.Product;
+
+import StoreInventoryMV.controller.StoreController;
+import StoreInventoryMV.model.Product;
 
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import static java.lang.System.in;
+import static java.lang.System.setOut;
 
 /**
  * Created by Vlad on 17-Mar-16.
  */
 public class StoreUI {
-    public StoreController ctrl;
-    Scanner in;
-    public StoreUI(StoreController ctrl){
-        this.ctrl=ctrl;
-        this.in=new Scanner(System.in);
-    }
-    public void printMenu() {
-        String menu;
-        menu = "These are the available commands:\n";
-        menu += "\t 1 - Add a new Product \n";
-        menu += "\t 2 - Displays all products from category\n";
-        menu += "\t 3 - Stock situation for all productst \n";
-        menu += "\t 4 - Stock situation for a certain product \n";
-        menu += "\t 0 - to exit; \n";
-        System.out.println(menu);
+    private StoreController con;
+    private boolean running;
+
+    public StoreUI(StoreController con){
+        this.con = con;
+        this.running = true;
     }
 
-    public void AddNewProduct()
-    {
-        System.out.println("Give the Product code:");
-        int pCode = Integer.parseInt(in.nextLine());
+    public void printMenu(){
+        String s = "----- Menu: -----\n";
+        s += "\t[1] - Add new Product \n";
+        s += "\t[2] - Show products by CATEGORY \n";
+        s += "\t[3] - Show products by NAME \n";
+        s += "\t[4] - Show ALL products \n";
+        s += "\t[0] - Exit \n";
 
-        System.out.println("Give the product name:");
-        String pName = in.nextLine();
-
-        System.out.println("Give the product category:");
-        String pCategory = in.nextLine();
-
-        System.out.println("Give the quantity:");
-        int pQunatity = Integer.parseInt(in.nextLine());
-
-        Product p = new Product(pCode,pName,pCategory,pQunatity);
-        ctrl.addProduct(p);
-        System.out.println("Product Added");
+        System.out.println(s);
     }
 
-    public void DisplayCategory()
-    {
-        System.out.println("Give category");
-        String cat=in.nextLine();
-        ArrayList<Product> temp = ctrl.getProductsCategory(cat);
+    public void printList(ArrayList<Product> list){
+        System.out.println("-----------------------------");
+        for(Product p : list){
+            System.out.println("\t" + p.toString());
+        }
+        System.out.println("-----------------------------\n");
+    }
 
-        for (Product p : temp) {
-            System.out.println(p.toString());
+    public int readInt(){
+        try {
+            Scanner in = new Scanner(System.in);
+            return in.nextInt();
+        } catch (Exception e){
+            return -1;
         }
     }
 
-    public void DisplayStock()
-    {
-
-        ArrayList<Product> temp = ctrl.stockSituation();
-
-        for (Product p : temp) {
-            System.out.println(p.toString());
+    public String readString(){
+        try {
+            Scanner in = new Scanner(System.in);
+            return in.next();
+        } catch (Exception e){
+            return "";
         }
     }
 
-    public void DisplayStockFor()
-    {
-        System.out.println("Give product name");
-        String cat=in.nextLine();
-        ArrayList<Product> temp = ctrl.stockSituationProduct(cat);
 
-        for (Product p : temp) {
-            System.out.println(p.toString());
+    public void addNewProduct(){
+        System.out.println("----- Adding new Product -----");
+        System.out.print("Code: ");
+        int c = readInt();
+        System.out.println();
+
+        System.out.print("Name: ");
+        String n = readString();
+        System.out.println();
+
+        System.out.print("Category: ");
+        String cat = readString();
+        System.out.println();
+
+        System.out.print("Supplier: ");
+        String s = readString();
+        System.out.println();
+
+        System.out.print("Quantity: ");
+        int q = readInt();
+        System.out.println();
+
+        try {
+            this.con.addNewProduct(c,n,cat,s,q);
+            System.out.println("----- Success -----");
+        } catch (Exception e){
+            System.out.println("!!!!! Error !!!!!");
+            System.out.println(e.getMessage());
+            System.out.println("!!!!! Error !!!!!");
         }
     }
 
-    public int readCommand() {
-        System.out.println("Give a command: ");
-        int c = 0;
-        c = Integer.parseInt(in.nextLine());
-        return c;
+    public void displayByCategory(){
+        try{
+            System.out.print("Category: ");
+            String cat = readString();
+            System.out.println();
+            printList(this.con.getProductsByCategory(cat));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());;
+        }
     }
 
-    public void executeCommand(int c) {
-        switch(c) {
+    public void displayByName(){
+        try{
+            System.out.print("Name: ");
+            String name = readString();
+            System.out.println();
+            printList(this.con.getProductsByName(name));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());;
+        }
+    }
+
+    public void displayAll(){
+        printList(this.con.getAllProducts());
+    }
+
+
+    public void executeCommand(int c){
+        switch (c){
+            case 0:
+                this.running = false;
+                break;
+
             case 1:
-                AddNewProduct();
+                addNewProduct();
                 break;
+
             case 2:
-                DisplayCategory();
+                displayByCategory();
                 break;
+
             case 3:
-                DisplayStock();
+                displayByName();
                 break;
+
             case 4:
-                DisplayStockFor();
+                displayAll();
                 break;
+
             default:
-                System.out.println("B'bye now!...\n");
+                System.out.println("Invalid command!");
                 break;
         }
     }
 
-    public void run() {
-        int c;
-        do {
+    public void run(){
+        while ( this.running ){
             printMenu();
-            c = readCommand();
+            System.out.print("> ");
+            int c = readInt();
             executeCommand(c);
-        } while(c != 0);
-
+        }
     }
-
-
-
 }

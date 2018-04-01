@@ -1,34 +1,19 @@
+package StoreInventoryMV;
 
 
-import java.io.IOException;
-
-import model.Product;
-import controller.StoreController;
-import ui.StoreUI;
+import StoreInventoryMV.controller.StoreController;
+import StoreInventoryMV.repository.StoreRepository;
+import StoreInventoryMV.ui.StoreUI;
 
 public class App {
 
-	/**
-	 * @param args
-	 * @throws IOException 
-	 */
-	public static void main(String[] args) throws IOException {
-		// TODO Auto-generated method stub
-		
-//		Product p=new Product();
-		//p.read();
-		StoreController c=new StoreController();
-		c.readProducts("products.txt");
+	public static void main(String[] args){
+		StoreRepository repo = new StoreRepository("products.txt",true);
+        StoreController con = new StoreController(repo);
+        StoreUI ui = new StoreUI(con);
 
-		StoreUI u = new StoreUI(c);
-		u.run();
-		//c.addProduct(p);
-	//	for(Product q:c.getProductsCategory("second")){
-		//	System.out.println(q.toString());
-		//}
-//		for(Product q:c.stockSituationProduct("Laptop"))
-//			System.out.println(q.toString());
-//
+        ui.run();
+        repo.saveToFile();
 	}
 
 }
