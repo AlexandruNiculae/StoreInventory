@@ -1,9 +1,5 @@
 package StoreInventoryMV.model;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
 public class Product {
 
 	private int code;
@@ -70,9 +66,11 @@ public class Product {
 
         Product otherProduct = (Product)other;
         if ( this.code != otherProduct.code ) return false;
-        if (!this.name.equals(otherProduct.name)) return false;
-        if (!this.category.equals(otherProduct.category)) return false;
-        if (!this.supplier.equals(otherProduct.supplier)) return false;
+        if (this.name == null || otherProduct.name == null || !this.name.equals(otherProduct.name)) return false;
+        if (this.category == null || otherProduct.category == null || !this.category.equals(otherProduct.category))
+            return false;
+        if (this.supplier == null || otherProduct.supplier == null || !this.supplier.equals(otherProduct.supplier))
+            return false;
 
         return true;
     }

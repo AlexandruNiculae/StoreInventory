@@ -46,7 +46,7 @@ public class StoreRepository {
             }
         }
 
-        return new Product();
+        return null;
     }
 
     public ArrayList<Product> getAllProducts() {
