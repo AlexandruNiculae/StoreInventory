@@ -32,39 +32,4 @@ public class ProductTest extends TestCase {
         assertTrue("Products should not be equal!", p != pp);
 
     }
-
-    public void testGetters() {
-        Product p = new Product(1, "a", "b", "c", 2);
-
-        assertTrue("Code should be 1!", p.getCode() == 1);
-        assertTrue("Name should be a!", p.getName().equals("a"));
-        assertTrue("Category should be b!", p.getCategory().equals("b"));
-        assertTrue("Supplier should be c!", p.getSupplier().equals("c"));
-        assertTrue("Quantity should be 2!", p.getQuantity() == 2);
-
-        p = new Product();
-
-        assertTrue("Code should be 0!", p.getCode() == 0);
-        assertTrue("Name should be null!", p.getName() == null);
-        assertTrue("Category should be null!", p.getCategory() == null);
-        assertTrue("Supplier should be null!", p.getSupplier() == null);
-        assertTrue("Quantity should be -1!", p.getQuantity() == -1);
-
-    }
-
-    public void testSetters() {
-        Product p = new Product();
-
-        p.setCode(1);
-        p.setName("a");
-        p.setCategory("b");
-        p.setSupplier("c");
-        p.setQuantity(2);
-
-        assertTrue("Code should be 1!", p.getCode() == 1);
-        assertTrue("Name should be a!", p.getName().equals("a"));
-        assertTrue("Category should be b!", p.getCategory().equals("b"));
-        assertTrue("Supplier should be c!", p.getSupplier().equals("c"));
-        assertTrue("Quantity should be 2!", p.getQuantity() == 2);
-    }
 }
